@@ -26,7 +26,7 @@ lazy val root = project
   .settings(
     skip in publish := true
   )
-  .aggregate(coreJVM, coreJS, benchmarks)
+  .aggregate(coreJVM, coreJS, benchmarks, docs)
   .enablePlugins(ScalaJSPlugin)
 
 lazy val core = crossProject
@@ -56,3 +56,43 @@ lazy val benchmarks = project.module
         "org.typelevel"  %% "cats-effect"   % "1.0.0-RC"
       )
   )
+
+lazy val docs = project.in(file("docs"))
+  .enablePlugins(MicrositesPlugin)
+  .settings(stdSettings("zio-docs"))
+  .settings(docSettings)
+  .settings(noPublishSettings)
+
+lazy val noPublishSettings = Seq(
+  publish := {},
+  publishLocal := {},
+  publishArtifact := false
+)
+
+
+lazy val docSettings = Seq(
+  micrositeName := "ZIO",
+  micrositeDescription := "ZIO",
+  micrositeAuthor := "John De Goes",
+  micrositeHighlightTheme := "atom-one-light",
+  micrositeHomepage := "https://github.com/scalaz/scalaz-zio",
+//  micrositeBaseUrl := "/scalaz-zio",
+  micrositeDocumentationUrl := "/scalaz-zio",
+  micrositeGithubRepo := "https://github.com/scalaz/scalaz-zio",
+//  micrositeBaseUrl := "https://github.com/scalaz/scalaz-zio",
+  micrositePalette := Map(
+    "brand-primary"   -> "#5B5988",
+    "brand-secondary" -> "#292E53",
+    "brand-tertiary"  -> "#222749",
+    "gray-dark"       -> "#49494B",
+    "gray"            -> "#7B7B7E",
+    "gray-light"      -> "#E5E5E6",
+    "gray-lighter"    -> "#F4F3F4",
+    "white-color"     -> "#FFFFFF"),
+  autoAPIMappings := true,
+  ghpagesNoJekyll := false,
+  fork in tut := true,
+
+  git.remoteRepo := "git@github.com:scalaz/scalaz-zio.git",
+  includeFilter in makeSite := "*.html" | "*.css" | "*.png" | "*.jpg" | "*.gif" | "*.js" | "*.swf" | "*.yml" | "*.md"| "*.svg"
+)
